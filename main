@@ -1,0 +1,34 @@
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+using namespace std;
+namespace fs = std::filesystem;
+void nusxalash_va_saqlash(const string& manba_papka, const string& backup_papka) {
+    fs::path manba_yol(manba_papka);
+    fs::path backup_yol(backup_papka);
+    if (!fs::exists(manba_yol)) {
+        cerr << "Xatolik: bunday  papka topilmadi\n";
+        return;
+    }
+    if (!fs::exists(backup_yol))
+        fs::create_directory(backup_yol);
+    for (const auto& fayl : fs::directory_iterator(manba_yol)) {
+        fs::path fayl_yol = fayl.path();
+        fs::path backup_fayl_yol = backup_yol / fayl_yol.filename();
+        fs::copy_file(fayl_yol, backup_fayl_yol, fs::copy_options::overwrite_existing);
+        cout << fayl_yol << " muvaffaqiyatli nusxalandi." << endl;
+    }
+
+    cout << "Barcha fayllar nusxalandi." << std::endl;
+}
+
+int main() {
+    string manba_papka, backup_papka;
+     manba_papka="urolbek";
+
+     backup_papka="backup";
+
+    nusxalash_va_saqlash(manba_papka, backup_papka);
+
+    return 0;
+}
